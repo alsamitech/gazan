@@ -6,6 +6,7 @@ package frc.robot;
 
 /** Add your docs here. */
 public final class Constants {
-    public Configs configs=new Configs();
-
+    public static Configs configs=new Configs();
+    public static String CANivoreName="vore";
+    
 }

@@ -9,10 +9,25 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team696.lib.HardwareDevices.TalonFactory;
 
 public class Intake extends SubsystemBase {
-  TalonFactory m_IntakeMotor=new TalonFactory(10, "vore", Constants.configs.intake.intake, "Intake");
+  private static Intake intake;
+  public static Intake get(){
+    if(intake!=null)intake=new Intake();
+    return intake;
+  }
+  TalonFactory m_Serializer;
   /** Creates a new Intake. */
   public Intake() {
-  
+    m_Serializer=new TalonFactory(10, Constants.CANivoreName, Constants.configs.intake.serializer, "Intake Serializer");
+  }
+  public void stop(){
+    m_Serializer.stop();
+  }
+  /**
+   * Sets the speed of the intake serializer
+   * @param speed [0-1] Speed of the serializer motor
+   */
+  public void setSpeed(double speed){
+    m_Serializer.VoltageOut(speed);
   }
 
   @Override

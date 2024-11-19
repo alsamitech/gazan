@@ -20,7 +20,6 @@ public class Configs {
     }
     public class Intake{
         public TalonFXConfiguration serializer;
-        public TalonFXConfiguration intake;
     }
     public Hood hood=new Hood();
     public Shooter shooter=new Shooter();
@@ -43,6 +42,7 @@ public class Configs {
         hood.left.Slot0.kS = 0.6;
         hood.left.Slot0.kV = 0;
         hood.left.Slot0.kA = 0;
+        hood.left.Feedback.SensorToMechanismRatio=
         hood.left.MotionMagic.MotionMagicCruiseVelocity = 80;
         hood.left.MotionMagic.MotionMagicAcceleration = 100;
 

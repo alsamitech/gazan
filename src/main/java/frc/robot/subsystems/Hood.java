@@ -4,12 +4,42 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
+import frc.team696.lib.HardwareDevices.TalonFactory;
+import com.ctre.phoenix6.controls.*;
 public class Hood extends SubsystemBase {
+  private static Hood hood;
+  public static Hood get(){
+    if(hood==null) hood=new Hood();
+    return hood;
+  }
   /** Creates a new Hood. */
-  public Hood() {}
-
+  TalonFactory left, right;
+  private PositionVoltage m_PositionReq;
+  public Hood() {
+    left=new TalonFactory(10, Constants.CANivoreName,Constants.configs.hood.left, "Left Hood");
+    right=new TalonFactory(10, Constants.CANivoreName,Constants.configs.hood.right, "Left Right");
+    right.Follow(left, true);
+    left.setPosition(0);
+    right.setPosition(0);
+  }
+  /**
+   * 
+   * @return Angle of the Hood (in degrees)
+   */
+  public double getAngle(){
+    return Units.rotationsToDegrees(left.getPosition());
+  }
+  /**
+   * 
+   * @param newPosition Desired position of the Hood (in degrees)
+   */
+  public void setAngle(double newPosition){
+    left.setPosition(Units.degreesToRotations(newPosition));
+  }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
