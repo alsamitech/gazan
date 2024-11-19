@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.interpolation.Interpolatable;
 import edu.wpi.first.units.*;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,7 +14,7 @@ import frc.team696.lib.Util;
 import frc.team696.lib.Datatypes.InterpolatingTable;
 import frc.team696.lib.HardwareDevices.TalonFactory;
 import com.ctre.phoenix6.controls.*;
-public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase implements Sendable{
   private static Shooter shooter;
   public static Shooter get(){
     if(shooter==null) shooter=new Shooter();
@@ -26,9 +27,22 @@ public class Shooter extends SubsystemBase {
     public double rightVelocity;
     public double angle;
     public boolean beamBreak;
+    /**
+     * 
+     * @param leftVelocity
+     * @param rightVelocity
+     * @param angle
+     * @param beamBreak
+     */
     public State(double leftVelocity, double rightVelocity, double angle, boolean beamBreak){
       this.leftVelocity=leftVelocity;this.rightVelocity=rightVelocity;this.angle=angle;this.beamBreak=beamBreak;
     }
+    /**
+     * 
+     * @param leftVelocity
+     * @param rightVelocity
+     * @param angle
+     */
     public State(double leftVelocity, double rightVelocity, double angle){
       this.leftVelocity=leftVelocity;this.rightVelocity=rightVelocity;this.angle=angle;
     }
@@ -40,12 +54,13 @@ public class Shooter extends SubsystemBase {
         Util.lerp(t, this.leftVelocity, endValue.leftVelocity));
     }
   }
-  private TalonFactory m_leftMotor, m_rightMotor;
+  private TalonFactory m_leftMotor, m_rightMotor, m_serializer;
   private VelocityVoltage m_leftVV, m_rightVV;
   private DigitalInput beamBreak;
   public Shooter() {
     m_leftMotor=new TalonFactory(0, Constants.CANivoreName, Constants.configs.shooter.left,"Left Shooter");
     m_rightMotor=new TalonFactory(0, Constants.CANivoreName, Constants.configs.shooter.right,"Right Shooter");
+    m_serializer=new TalonFactory(0, Constants.CANivoreName, Constants.configs.shooter.serializer, "Serializer");
     beamBreak=new DigitalInput(7);
   }
 
@@ -57,7 +72,20 @@ public class Shooter extends SubsystemBase {
     m_rightMotor.setControl(m_rightVV.withVelocity(s.rightVelocity));
 
   }
-
+  /**
+   * Sets the speed of the serializer rollers
+   * @param speed [0-1] The speed of the serializer rolelrs
+   */
+  public void serializerSpeed(double speed){
+    if(speed>1||speed<0) return;
+    m_serializer.VoltageOut(speed);
+  }
+  /**
+   * Stops the shooter serialzer rollers
+   */
+  public void stopSerializer(){
+    m_serializer.stop();
+  }
   public State getState(){
     return new State(m_leftMotor.getVelocity(), m_rightMotor.getVelocity(), Hood.get().getAngle());
   }

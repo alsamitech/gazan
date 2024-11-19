@@ -39,7 +39,14 @@ public class Hood extends SubsystemBase {
   public void setAngle(double newPosition){
     left.setPosition(Units.degreesToRotations(newPosition));
   }
-  
+  /**
+   * 
+   * @param angle Desired angle (in degrees)
+   * @return True if hood is within tolerance of the angle, false if it is off
+   */
+  public boolean atAngle(double angle){
+    return Math.abs(angle-getAngle())<3;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

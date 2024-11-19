@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team696.lib.HardwareDevices.TalonFactory;
 
@@ -15,12 +16,21 @@ public class Intake extends SubsystemBase {
     return intake;
   }
   TalonFactory m_Serializer;
+  DigitalInput beamBreak;
   /** Creates a new Intake. */
   public Intake() {
     m_Serializer=new TalonFactory(10, Constants.CANivoreName, Constants.configs.intake.serializer, "Intake Serializer");
+    beamBreak=new DigitalInput(8);
   }
   public void stop(){
     m_Serializer.stop();
+  }
+  /**
+   * Gets the status of the intake beam break
+   * @return True if the beam break is unbroken, false if it is broken 
+   */
+  public boolean getBeamBreak(){
+    return beamBreak.get();
   }
   /**
    * Sets the speed of the intake serializer

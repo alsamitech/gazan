@@ -22,7 +22,7 @@ public class Shoot extends Command {
   public void initialize() {}
 
 
-  public void setState(Shooter.State s){
+  private void setState(Shooter.State s){
     Shooter.get().setState(s);
     Hood.get().setAngle(s.angle);
   }
@@ -31,15 +31,23 @@ public class Shoot extends Command {
   public void execute() {
     Shooter.State s=Shooter.shootTable.getValue(Swerve.get().distToSpeaker());
     setState(s);
-    if(Shooter.get().upToSpeed(s)){
-      // spin serializer
+    // wait for spinup 
+    if(Shooter.get().upToSpeed(s)&&Hood.get().atAngle(s.angle)){
+      // spin serializer to shoot
+      Shooter.get().serializerSpeed(0.2);
+    }
+    if(Shooter.get().getState().beamBreak){
+      // stop the serializer once the note is no longer there
+      Shooter.get().stopSerializer();
     }
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    Shooter.get().stopSerializer();
+  }
 
   // Returns true when the command should end.
   @Override
