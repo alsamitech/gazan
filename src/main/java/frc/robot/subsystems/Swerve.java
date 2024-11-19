@@ -4,7 +4,11 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Field;
+import frc.team696.lib.Util;
 import frc.team696.lib.Camera.LimeLightCam;
 import frc.team696.lib.Swerve.SwerveDriveSubsystem;
 
@@ -34,5 +38,7 @@ public class Swerve extends SwerveDriveSubsystem {
   public void onUpdate(){
     
   }
-
+  public double distToSpeaker(){
+    return distTo(Util.getAlliance()==Alliance.Red?Field.RED.Speaker:Field.BLUE.Speaker);
+  }
 }

@@ -20,11 +20,12 @@ public class Shooter extends SubsystemBase {
     return shooter;
   }
   public static InterpolatingTable<State> shootTable=new InterpolatingTable<State>();
+  public static InterpolatingTable<State> passTable=new InterpolatingTable<State>();
   public static class State implements Interpolatable<State>{
-    double leftVelocity;
-    double rightVelocity;
-    double angle;
-    boolean beamBreak;
+    public double leftVelocity;
+    public double rightVelocity;
+    public double angle;
+    public boolean beamBreak;
     public State(double leftVelocity, double rightVelocity, double angle, boolean beamBreak){
       this.leftVelocity=leftVelocity;this.rightVelocity=rightVelocity;this.angle=angle;this.beamBreak=beamBreak;
     }
