@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.interpolation.Interpolatable;
 import edu.wpi.first.units.*;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -26,17 +27,7 @@ public class Shooter extends SubsystemBase implements Sendable{
     public double leftVelocity;
     public double rightVelocity;
     public double angle;
-    public boolean beamBreak;
-    /**
-     * 
-     * @param leftVelocity
-     * @param rightVelocity
-     * @param angle
-     * @param beamBreak
-     */
-    public State(double leftVelocity, double rightVelocity, double angle, boolean beamBreak){
-      this.leftVelocity=leftVelocity;this.rightVelocity=rightVelocity;this.angle=angle;this.beamBreak=beamBreak;
-    }
+
     /**
      * 
      * @param leftVelocity
@@ -89,8 +80,17 @@ public class Shooter extends SubsystemBase implements Sendable{
   public State getState(){
     return new State(m_leftMotor.getVelocity(), m_rightMotor.getVelocity(), Hood.get().getAngle());
   }
+  public boolean getBeamBreak(){
+    return beamBreak.get();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+  @Override
+  public void initSendable(SendableBuilder b){
+    b.addDoubleProperty("Left Roller Velocity", m_leftMotor::getVelocity, null);
+    b.addDoubleProperty("Right Roller Velocity", m_rightMotor::getVelocity, null);
+
   }
 }

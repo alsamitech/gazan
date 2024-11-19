@@ -5,11 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.team696.lib.HardwareDevices.TalonFactory;
 import com.ctre.phoenix6.controls.*;
-public class Hood extends SubsystemBase {
+public class Hood extends SubsystemBase implements Sendable {
   private static Hood hood;
   public static Hood get(){
     if(hood==null) hood=new Hood();
@@ -47,6 +49,12 @@ public class Hood extends SubsystemBase {
   public boolean atAngle(double angle){
     return Math.abs(angle-getAngle())<3;
   }
+
+  @Override
+  public void initSendable(SendableBuilder b){
+    b.addDoubleProperty("angle", left::getPosition, null);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -14,6 +14,7 @@ public class GroundIntake extends Command {
   public GroundIntake() {
     addRequirements(Intake.get());
     addRequirements(Hood.get());
+    addRequirements(Shooter.get());
   }
 
   // Called when the command is initially scheduled.
@@ -40,6 +41,6 @@ public class GroundIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !Intake.get().getBeamBreak()&&!Shooter.get().getBeamBreak();
   }
 }

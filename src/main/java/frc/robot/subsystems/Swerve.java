@@ -22,9 +22,13 @@ public class Swerve extends SwerveDriveSubsystem {
   }
   public Swerve() {
     shooterCam=new LimeLightCam("limelight-shooter");
+    // don't do anything with this yet
     noteCam=new LimeLightCam("limelight-note");
 
-    shooterCam.addVisionEstimate(this::addVisionMeasurement, (latestResult)->{
+
+  }
+  public void onUpdate(){
+      shooterCam.addVisionEstimate(this::addVisionMeasurement, (latestResult)->{
       if(latestResult.ambiguity>0.4||getState().angularVelocity()>2.5){
         return false;
       }
@@ -34,9 +38,6 @@ public class Swerve extends SwerveDriveSubsystem {
       shooterCam.setStdDeviations(deviationRatio/5, deviationRatio/5, deviationRatio/5);
       return true;
     });
-  }
-  public void onUpdate(){
-    
   }
   public double distToSpeaker(){
     return distTo(Util.getAlliance()==Alliance.Red?Field.RED.Speaker:Field.BLUE.Speaker);

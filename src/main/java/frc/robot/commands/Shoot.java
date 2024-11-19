@@ -36,7 +36,7 @@ public class Shoot extends Command {
       // spin serializer to shoot
       Shooter.get().serializerSpeed(0.2);
     }
-    if(Shooter.get().getState().beamBreak){
+    if(Shooter.get().getBeamBreak()){
       // stop the serializer once the note is no longer there
       Shooter.get().stopSerializer();
     }

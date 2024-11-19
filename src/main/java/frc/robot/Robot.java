@@ -6,18 +6,42 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
+import frc.team696.lib.Auto;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private PowerDistribution PDH;
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
+    // Initialize subsystems
+    Shooter.get();
+    Intake.get();
+    Hood.get();
+    Swerve.get();
+
+    
+    // Initialize core components
+    Auto.Initialize(Swerve.get(), null);
+
+
+    // Set up logging and telemetry 
+    SmartDashboard.putData(Shooter.get());
+    SmartDashboard.putData(Swerve.get());
+
+    // Set up controls
+    Controls.EmilDriverStation.setup();
+
   }
 
   @Override
@@ -36,7 +60,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = Auto.get().Selected();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
