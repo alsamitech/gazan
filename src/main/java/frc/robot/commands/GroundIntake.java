@@ -21,12 +21,14 @@ public class GroundIntake extends Command {
   @Override
   public void initialize() {
     Intake.get().setSpeed(0.3);
+    Hood.get().setAngle(45);
+    Shooter.get().serializerSpeed(0.2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!Intake.get().getBeamBreak()){
+    if(!Shooter.get().getBeamBreak()){
       // beam break is broken, stop spinning the rollers
       Intake.get().stop();
     }

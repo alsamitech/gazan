@@ -4,9 +4,16 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
+import java.io.IOException;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +23,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.team696.lib.Auto;
+import frc.team696.lib.Util;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -24,6 +32,18 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    // Set up logging and telemetry 
+    if(isReal()){
+      Logger.addDataReceiver(new WPILOGWriter("/u/logs"));
+    }
+    Logger.addDataReceiver(new NT4Publisher());
+    try{
+      Logger.recordMetadata("Robot Mac Address", Util.getMacAddresses().toString());
+    }catch(IOException e){}
+    SmartDashboard.putData(Shooter.get());
+    SmartDashboard.putData(Swerve.get());
+    DriverStation.silenceJoystickConnectionWarning(true);
+
     // Initialize subsystems
     Shooter.get();
     Intake.get();
@@ -31,13 +51,14 @@ public class Robot extends LoggedRobot {
     Swerve.get();
 
     
-    // Initialize core components
+    // Initialize common library components
     Auto.Initialize(Swerve.get(), null);
 
+    // Initialize and confiugre controllers 
+    RobotController.setEnabled5V(true); // beambreaks need these
+    RobotController.setEnabled6V(false);
+    RobotController.setEnabled3V3(false);
 
-    // Set up logging and telemetry 
-    SmartDashboard.putData(Shooter.get());
-    SmartDashboard.putData(Swerve.get());
 
     // Set up controls
     Controls.EmilDriverStation.setup();
@@ -46,7 +67,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
+    double start=System.currentTimeMillis();
+    // run the command scheduler
     CommandScheduler.getInstance().run();
+    double end=System.currentTimeMillis();
+    Logger.recordOutput("Times/CommandSchedulerMs", end-start);
   }
 
   @Override

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Field;
@@ -29,6 +30,7 @@ public class Swerve extends SwerveDriveSubsystem {
   }
   public void onUpdate(){
       shooterCam.addVisionEstimate(this::addVisionMeasurement, (latestResult)->{
+      // AprilTag reads while the robot is rotating quickly may be inaccurate
       if(latestResult.ambiguity>0.4||getState().angularVelocity()>2.5){
         return false;
       }
@@ -41,5 +43,14 @@ public class Swerve extends SwerveDriveSubsystem {
   }
   public double distToSpeaker(){
     return distTo(Util.getAlliance()==Alliance.Red?Field.RED.Speaker:Field.BLUE.Speaker);
+  }
+  public Rotation2d angleToSpeaker(){
+    return angleTo(Field.getSide().Speaker);
+  }
+  public double distToCorner(){
+    return distTo(Field.getSide().Corner);
+  }
+  public Rotation2d angleToCorner(){
+    return angleTo(Field.getSide().Corner);
   }
 }

@@ -25,7 +25,6 @@ public class Hood extends SubsystemBase implements Sendable {
     right=new TalonFactory(10, Constants.CANivoreName,Constants.configs.hood.right, "Left Right");
     right.Follow(left, true);
     left.setPosition(0);
-    right.setPosition(0);
   }
   /**
    * 
@@ -36,10 +35,11 @@ public class Hood extends SubsystemBase implements Sendable {
   }
   /**
    * 
-   * @param newPosition Desired position of the Hood (in degrees)
+   * @param degrees Desired position of the Hood (in degrees) [0-110]
    */
-  public void setAngle(double newPosition){
-    left.setPosition(Units.degreesToRotations(newPosition));
+  public void setAngle(double degrees){
+    if(degrees>0&&degrees<120)
+    left.setPosition(Units.degreesToRotations(degrees));
   }
   /**
    * 
@@ -53,6 +53,9 @@ public class Hood extends SubsystemBase implements Sendable {
   @Override
   public void initSendable(SendableBuilder b){
     b.addDoubleProperty("angle", left::getPosition, null);
+    b.addDoubleProperty("left angle motor current", left::getCurrent, null);
+    b.addDoubleProperty("right angle motor current", right::getCurrent, null);
+
   }
 
   @Override

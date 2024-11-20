@@ -6,19 +6,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
 
-public class SourceIntake extends Command {
-  Shooter.State source=new Shooter.State(-1000, -1000, 30);
-  /** Creates a new SourceIntake. */
-  public SourceIntake() {
+public class Pass extends Command {
+  private boolean shouldFinish=false;
+  /** Creates a new Pass. */
+  public Pass() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Hood.get());
     addRequirements(Shooter.get());
-    addRequirements(Intake.get());
-    Shooter.get().serializerSpeed(-0.3);
-
   }
   private void setState(Shooter.State s){
     Shooter.get().setState(s);
@@ -26,24 +23,31 @@ public class SourceIntake extends Command {
   }
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    setState(source);
-    Shooter.get().serializerSpeed(-0.2);
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!Intake.get().getBeamBreak())
-    // the shooter beam break is broken, the note is in, stop the serializer
+    // we're assuming the note is actually in the robot therefore we're assuming that the beambreak is broken 
+    boolean didSeeFront=false;
+    Shooter.State s=Shooter.get().passTable.getValue(Swerve.get().distToCorner());
+    setState(s);
+    // TODO: make sure the robot is actually pointed in the direction of the corner
+    if(Shooter.get().upToSpeed(s)&&Hood.get().atAngle(s.angle)&&!didSeeFront){
+      // you can shoot now!!!
+      Shooter.get().serializerSpeed(0.3);
+      
+    }
+    if(Shooter.get().getBeamBreak()){
       Shooter.get().serializerSpeed(0);
+      didSeeFront=true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+
   }
 
   // Returns true when the command should end.

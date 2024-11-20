@@ -10,6 +10,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 
 public class Shoot extends Command {
+  private boolean shouldFinish=false;
   /** Creates a new Shoot. */
   
   public Shoot() {

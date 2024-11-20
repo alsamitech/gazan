@@ -185,7 +185,7 @@ public class Auto {
     }
 
     public static Command PathFind(Pose2d end) {
-        return AutoBuilder.pathfindToPose(end, new PathConstraints(1, 1, Math.PI,Math.PI));
+        return AutoBuilder.pathfindToPose(end, new PathConstraints(1.5, 1, Math.PI,Math.PI));
     }
 
     public Command PathFindToAutoBeginning() {
