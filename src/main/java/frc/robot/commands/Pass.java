@@ -11,6 +11,8 @@ import frc.robot.subsystems.Swerve;
 
 public class Pass extends Command {
   private boolean shouldFinish=false;
+  private boolean didSeeFront=false;
+
   /** Creates a new Pass. */
   public Pass() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,8 +31,7 @@ public class Pass extends Command {
   @Override
   public void execute() {
     // we're assuming the note is actually in the robot therefore we're assuming that the beambreak is broken 
-    boolean didSeeFront=false;
-    Shooter.State s=Shooter.get().passTable.getValue(Swerve.get().distToCorner());
+    Shooter.State s=Shooter.passTable.getValue(Swerve.get().distToCorner());
     setState(s);
     // TODO: make sure the robot is actually pointed in the direction of the corner
     if(Shooter.get().upToSpeed(s)&&Hood.get().atAngle(s.angle)&&!didSeeFront){
@@ -47,12 +48,12 @@ public class Pass extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    Hood.get().stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return shouldFinish?didSeeFront:false;
   }
 }

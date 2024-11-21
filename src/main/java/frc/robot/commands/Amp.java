@@ -25,19 +25,23 @@ public class Amp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    boolean didSeeFront=true;
+    boolean didSeeFront=false;
     // check if the robot is aligned 
     // check if the shooter rollers are up to speed
     // if it is, spin the serializer to shoot the note
-    if(Shooter.get().upToSpeed(Shooter.ampState)){
+    if(Shooter.get().upToSpeed(Shooter.ampState)&&didSeeFront){
       Shooter.get().serializerSpeed(0.3);
+    }
+    if(Shooter.get().getBeamBreak()){
+      Shooter.get().serializerSpeed(0);
+      didSeeFront=true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Hood.get().setAngle(2);
+    Hood.get().stop();
   }
 
   // Returns true when the command should end.

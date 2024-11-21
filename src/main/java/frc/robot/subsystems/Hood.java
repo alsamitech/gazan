@@ -50,7 +50,9 @@ public class Hood extends SubsystemBase implements Sendable {
   public boolean atAngle(double angle){
     return Math.abs(angle-getAngle())<3;
   }
-
+  public void stop(){
+    left.stop();
+  }
   @Override
   public void initSendable(SendableBuilder b){
     b.addDoubleProperty("angle", left::getPosition, null);

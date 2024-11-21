@@ -24,7 +24,7 @@ public class Rotate extends Command {
     thetaController=new PIDController(0.001, 0, 0);
     thetaController.enableContinuousInput(-180, 180);
   }
-  public Rotate(Supplier<Rotation2d> supplier, boolean shouldFinish) {
+  public Rotate(Supplier<Rotation2d> goalSupplier, boolean shouldFinish) {
     addRequirements(Swerve.get());
     this.goalSupplier=goalSupplier;
     thetaController=new PIDController(0.001, 0, 0);

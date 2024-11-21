@@ -5,13 +5,12 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team696.lib.HardwareDevices.TalonFactory;
 
-public class Intake extends SubsystemBase implements Sendable{
+public class Intake extends SubsystemBase{
   private static Intake intake;
   public static Intake get(){
     if(intake!=null)intake=new Intake();

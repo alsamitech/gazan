@@ -11,11 +11,18 @@ import frc.robot.subsystems.Swerve;
 
 public class Shoot extends Command {
   private boolean shouldFinish=false;
+  private boolean didSeeFront=false;
+
   /** Creates a new Shoot. */
   
   public Shoot() {
     addRequirements(Shooter.get());
     addRequirements(Hood.get());
+  }
+  public Shoot(boolean shouldFinish) {
+    addRequirements(Shooter.get());
+    addRequirements(Hood.get());
+    this.shouldFinish=shouldFinish;
   }
 
   // Called when the command is initially scheduled.
@@ -48,11 +55,13 @@ public class Shoot extends Command {
   @Override
   public void end(boolean interrupted) {
     Shooter.get().stopSerializer();
+    Hood.get().stop();
+    
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return shouldFinish?didSeeFront:false;
   }
 }

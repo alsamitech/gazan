@@ -85,6 +85,11 @@ public class Shooter extends SubsystemBase implements Sendable{
   public boolean getBeamBreak(){
     return beamBreak.get();
   }
+  public void stop(){
+    m_leftMotor.stop();
+    m_rightMotor.stop();
+    m_serializer.stop();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
