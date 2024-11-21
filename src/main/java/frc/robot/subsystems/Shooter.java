@@ -22,6 +22,7 @@ public class Shooter extends SubsystemBase implements Sendable{
     return shooter;
   }
   public static double ManualShootAngle=35;
+  public static State ampState=new State(800, 800, 95);
   public static InterpolatingTable<State> shootTable=new InterpolatingTable<State>();
   public static InterpolatingTable<State> passTable=new InterpolatingTable<State>();
   public static class State implements Interpolatable<State>{
@@ -93,6 +94,6 @@ public class Shooter extends SubsystemBase implements Sendable{
     b.addDoubleProperty("Left Roller Velocity", m_leftMotor::getVelocity, null);
     b.addDoubleProperty("Right Roller Velocity", m_rightMotor::getVelocity, null);
     b.addDoubleProperty("Right Roller Velocity", ()->ManualShootAngle, (double degrees)->{ManualShootAngle=degrees;});
-
+    b.addBooleanProperty("Front BeamBreak",this::getBeamBreak , null);
   }
 }

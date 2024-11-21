@@ -5,11 +5,13 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team696.lib.HardwareDevices.TalonFactory;
 
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase implements Sendable{
   private static Intake intake;
   public static Intake get(){
     if(intake!=null)intake=new Intake();
@@ -43,5 +45,9 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+  @Override 
+  public void initSendable(SendableBuilder b){
+    b.addBooleanProperty("Back BeamBreak", this::getBeamBreak, null);
   }
 }

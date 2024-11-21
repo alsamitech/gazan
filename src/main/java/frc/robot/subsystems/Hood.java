@@ -29,6 +29,7 @@ public class Hood extends SubsystemBase implements Sendable {
   /**
    * 
    * @return Angle of the Hood (in degrees)
+   * @see frc.robot.Configs
    */
   public double getAngle(){
     return Units.rotationsToDegrees(left.getPosition());
@@ -60,6 +61,5 @@ public class Hood extends SubsystemBase implements Sendable {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

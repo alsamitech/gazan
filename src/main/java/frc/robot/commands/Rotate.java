@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -12,32 +14,35 @@ import frc.robot.subsystems.Swerve;
 import frc.team696.lib.Swerve.SwerveConstants;
 
 public class Rotate extends Command {
-  private double goalDegrees;
   private boolean shouldFinish=false;
+  private Supplier<Rotation2d> goalSupplier;
+  PIDController thetaController;
   /** Creates a new Rotate. */
-  public Rotate(Rotation2d goal) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public Rotate(Supplier<Rotation2d> goalSupplier) {
     addRequirements(Swerve.get());
-    goalDegrees=goal.getDegrees();
+    this.goalSupplier=goalSupplier;
+    thetaController=new PIDController(0.001, 0, 0);
+    thetaController.enableContinuousInput(-180, 180);
   }
-  public Rotate(Rotation2d goal, boolean shouldFinish) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public Rotate(Supplier<Rotation2d> supplier, boolean shouldFinish) {
     addRequirements(Swerve.get());
-    goalDegrees=goal.getDegrees();
+    this.goalSupplier=goalSupplier;
+    thetaController=new PIDController(0.001, 0, 0);
+    thetaController.enableContinuousInput(-180, 180);
     this.shouldFinish=shouldFinish;
   }
-  PIDController thetaController;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    thetaController=new PIDController(0.001, 0, 0);
-    thetaController.enableContinuousInput(-180, 180);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
       double rPower=0;
+      rPower=thetaController.calculate(Swerve.get().getYaw().getDegrees(), goalSupplier.get().getDegrees());
+      rPower=rPower*rPower;
       Swerve.get().Drive(new ChassisSpeeds(0,0, rPower*SwerveConstants.maxAngularVelocity));
   }
 
@@ -51,6 +56,6 @@ public class Rotate extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shouldFinish?Math.abs(Swerve.get().getYaw().getDegrees()-goalDegrees)<2.5:false;
+    return shouldFinish?Swerve.get().getYaw().minus(goalSupplier.get()).getDegrees()<2.5:false;
   }
 }

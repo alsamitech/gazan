@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
@@ -18,12 +20,16 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.Rotate;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.team696.lib.Auto;
 import frc.team696.lib.Util;
+import frc.team696.lib.Auto.NamedCommand;
+import frc.team696.lib.Swerve.Commands.TeleopSwerve;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -40,6 +46,11 @@ public class Robot extends LoggedRobot {
     try{
       Logger.recordMetadata("Robot Mac Address", Util.getMacAddresses().toString());
     }catch(IOException e){}
+    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
     SmartDashboard.putData(Shooter.get());
     SmartDashboard.putData(Swerve.get());
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -49,10 +60,14 @@ public class Robot extends LoggedRobot {
     Intake.get();
     Hood.get();
     Swerve.get();
+    Swerve.get().setDefaultCommand(TeleopSwerve.New().withRotationGoal(/* yo oscar this is juicy!!!! :) */Swerve.get()::angleToSpeaker));
 
     
     // Initialize common library components
-    Auto.Initialize(Swerve.get(), null);
+    Auto.Initialize(Swerve.get(), 
+      new NamedCommand("Shoot", (new Shoot().asProxy()).deadlineWith(new Rotate(Swerve.get()::angleToSpeaker)))
+
+    );
 
     // Initialize and confiugre controllers 
     RobotController.setEnabled5V(true); // beambreaks need these
