@@ -85,6 +85,9 @@ public class Shooter extends SubsystemBase implements Sendable{
   public boolean getBeamBreak(){
     return beamBreak.get();
   }
+  /**
+   * Stops all motors in the subsystem
+   */
   public void stop(){
     m_leftMotor.stop();
     m_rightMotor.stop();

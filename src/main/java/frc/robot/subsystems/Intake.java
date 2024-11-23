@@ -23,6 +23,9 @@ public class Intake extends SubsystemBase{
     m_Serializer=new TalonFactory(10, Constants.CANivoreName, Constants.configs.intake.serializer, "Intake Serializer");
     beamBreak=new DigitalInput(8);
   }
+  /**
+   * Stops all motors in the subsystem
+   */
   public void stop(){
     m_Serializer.stop();
   }

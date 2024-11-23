@@ -40,34 +40,49 @@ public class Robot extends LoggedRobot {
   public void robotInit() {
     // Set up logging and telemetry 
     if(isReal()){
+      // Log to a USB stick
       Logger.addDataReceiver(new WPILOGWriter("/u/logs"));
     }
-    Logger.addDataReceiver(new NT4Publisher());
+    Logger.addDataReceiver(new NT4Publisher()); // Log to Network Tables
+    
     try{
       Logger.recordMetadata("Robot Mac Address", Util.getMacAddresses().toString());
     }catch(IOException e){}
+    // Log build information
+    switch(BuildConstants.DIRTY){
+      case 0:{
+        Logger.recordMetadata("Dirty", "All changes commited");
+      }
+      case 1:{
+        Logger.recordMetadata("Dirty", "Uncommited changes");
+      }
+      case 2:{
+        Logger.recordMetadata("Dirty","Unknown");
+      }
+    }
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
     Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
     SmartDashboard.putData(Shooter.get());
     SmartDashboard.putData(Swerve.get());
     DriverStation.silenceJoystickConnectionWarning(true);
+    Logger.start();
 
     // Initialize subsystems
     Shooter.get();
     Intake.get();
     Hood.get();
     Swerve.get();
-    Swerve.get().setDefaultCommand(TeleopSwerve.New().withRotationGoal(/* yo oscar this is juicy!!!! :) */Swerve.get()::angleToSpeaker));
 
     
     // Initialize common library components
     Auto.Initialize(Swerve.get(), 
       new NamedCommand("Shoot", (new Shoot().asProxy()).deadlineWith(new Rotate(Swerve.get()::angleToSpeaker)))
 
-    );
+    ); 
 
     // Initialize and confiugre controllers 
     RobotController.setEnabled5V(true); // beambreaks need these
@@ -77,6 +92,9 @@ public class Robot extends LoggedRobot {
 
     // Set up controls
     Controls.EmilDriverStation.setup();
+    // make sure teleopswerve is initialized after controllers are set up
+    Swerve.get().setDefaultCommand(TeleopSwerve.New().withRotationGoal(/* yo oscar this is juicy!!!! :) */Swerve.get()::angleToSpeaker));
+
 
   }
 

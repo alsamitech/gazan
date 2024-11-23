@@ -50,6 +50,9 @@ public class Hood extends SubsystemBase implements Sendable {
   public boolean atAngle(double angle){
     return Math.abs(angle-getAngle())<3;
   }
+  /**
+   * Stops all motors in the subsystem
+   */
   public void stop(){
     left.stop();
   }

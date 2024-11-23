@@ -40,7 +40,7 @@ public class Shoot extends Command {
     Shooter.State s=Shooter.shootTable.getValue(Swerve.get().distToSpeaker());
     setState(s);
     // wait for spinup 
-    if(Shooter.get().upToSpeed(s)&&Hood.get().atAngle(s.angle)){
+    if(Shooter.get().upToSpeed(s)&&Hood.get().atAngle(s.angle)&&Swerve.get().angleToSpeaker().minus(Swerve.get().getYaw()).getDegrees()<5){
       // spin serializer to shoot
       Shooter.get().serializerSpeed(0.2);
     }
