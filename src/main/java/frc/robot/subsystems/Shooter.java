@@ -51,9 +51,9 @@ public class Shooter extends SubsystemBase implements Sendable{
   private VelocityVoltage m_leftVV, m_rightVV;
   private DigitalInput beamBreak;
   public Shooter() {
-    m_leftMotor=new TalonFactory(0, Constants.CANivoreName, Constants.configs.shooter.left,"Left Shooter");
-    m_rightMotor=new TalonFactory(0, Constants.CANivoreName, Constants.configs.shooter.right,"Right Shooter");
-    m_serializer=new TalonFactory(0, Constants.CANivoreName, Constants.configs.shooter.serializer, "Serializer");
+    m_leftMotor=new TalonFactory(13, Constants.CANivoreName, Constants.configs.shooter.left,"Left Shooter");
+    m_rightMotor=new TalonFactory(14, Constants.CANivoreName, Constants.configs.shooter.right,"Right Shooter");
+    m_serializer=new TalonFactory(15, Constants.CANivoreName, Constants.configs.shooter.serializer, "Serializer");
     beamBreak=new DigitalInput(7);
   }
 
@@ -99,9 +99,21 @@ public class Shooter extends SubsystemBase implements Sendable{
   }
   @Override
   public void initSendable(SendableBuilder b){
+    b.setSmartDashboardType("Subsystem");
+
     b.addDoubleProperty("Left Roller Velocity", m_leftMotor::getVelocity, null);
     b.addDoubleProperty("Right Roller Velocity", m_rightMotor::getVelocity, null);
     b.addDoubleProperty("Right Roller Velocity", ()->ManualShootAngle, (double degrees)->{ManualShootAngle=degrees;});
     b.addBooleanProperty("Front BeamBreak",this::getBeamBreak , null);
+    b.addBooleanProperty(".hasDefault", () -> getDefaultCommand() != null, null);
+    b.addStringProperty(
+        ".default",
+        () -> getDefaultCommand() != null ? getDefaultCommand().getName() : "none",
+        null);
+    b.addBooleanProperty(".hasCommand", () -> getCurrentCommand() != null, null);
+    b.addStringProperty(
+        ".command",
+        () -> getCurrentCommand() != null ? getCurrentCommand().getName() : "none",
+        null);
   }
 }

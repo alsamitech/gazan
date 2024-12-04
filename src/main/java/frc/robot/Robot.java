@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.Swerve;
 import frc.team696.lib.Auto;
 import frc.team696.lib.Util;
 import frc.team696.lib.Auto.NamedCommand;
+import frc.team696.lib.Dashboards.ShuffleDashboard;
 import frc.team696.lib.Swerve.Commands.TeleopSwerve;
 
 public class Robot extends LoggedRobot {
@@ -44,7 +46,6 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new WPILOGWriter("/u/logs"));
     }
     Logger.addDataReceiver(new NT4Publisher()); // Log to Network Tables
-    
     try{
       Logger.recordMetadata("Robot Mac Address", Util.getMacAddresses().toString());
     }catch(IOException e){}
@@ -66,8 +67,16 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
     Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
+
+    // Log the state of the command scheduler
+    SmartDashboard.putData(CommandScheduler.getInstance());
+    // Log which commands are running on which subsystems
+    SmartDashboard.putData(Hood.get());
+    SmartDashboard.putData(Swerve.get());
     SmartDashboard.putData(Shooter.get());
     SmartDashboard.putData(Swerve.get());
+    SmartDashboard.putData(Intake.get());
+    ShuffleDashboard.initialize();
     DriverStation.silenceJoystickConnectionWarning(true);
     Logger.start();
 

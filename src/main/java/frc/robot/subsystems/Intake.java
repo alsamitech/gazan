@@ -13,7 +13,7 @@ import frc.team696.lib.HardwareDevices.TalonFactory;
 public class Intake extends SubsystemBase{
   private static Intake intake;
   public static Intake get(){
-    if(intake!=null)intake=new Intake();
+    if(intake==null)intake=new Intake();
     return intake;
   }
   TalonFactory m_Serializer;
@@ -50,6 +50,18 @@ public class Intake extends SubsystemBase{
   }
   @Override 
   public void initSendable(SendableBuilder b){
+    b.setSmartDashboardType("Subsystem");
+
     b.addBooleanProperty("Back BeamBreak", this::getBeamBreak, null);
+    b.addBooleanProperty(".hasDefault", () -> getDefaultCommand() != null, null);
+    b.addStringProperty(
+        ".default",
+        () -> getDefaultCommand() != null ? getDefaultCommand().getName() : "none",
+        null);
+    b.addBooleanProperty(".hasCommand", () -> getCurrentCommand() != null, null);
+    b.addStringProperty(
+        ".command",
+        () -> getCurrentCommand() != null ? getCurrentCommand().getName() : "none",
+        null);
   }
 }

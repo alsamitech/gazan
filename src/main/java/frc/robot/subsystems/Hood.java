@@ -21,8 +21,9 @@ public class Hood extends SubsystemBase implements Sendable {
   TalonFactory left, right;
   private PositionVoltage m_PositionReq;
   public Hood() {
-    left=new TalonFactory(10, Constants.CANivoreName,Constants.configs.hood.left, "Left Hood");
-    right=new TalonFactory(10, Constants.CANivoreName,Constants.configs.hood.right, "Left Right");
+    
+    left=new TalonFactory(11, Constants.CANivoreName,Constants.configs.hood.left, "Left Hood");
+    right=new TalonFactory(12, Constants.CANivoreName,Constants.configs.hood.right, "Left Right");
     right.Follow(left, true);
     left.setPosition(0);
   }
@@ -58,10 +59,21 @@ public class Hood extends SubsystemBase implements Sendable {
   }
   @Override
   public void initSendable(SendableBuilder b){
+    b.setSmartDashboardType("Subsystem");
+
     b.addDoubleProperty("angle", left::getPosition, null);
     b.addDoubleProperty("left angle motor current", left::getCurrent, null);
     b.addDoubleProperty("right angle motor current", right::getCurrent, null);
-
+    b.addBooleanProperty(".hasDefault", () -> getDefaultCommand() != null, null);
+    b.addStringProperty(
+        ".default",
+        () -> getDefaultCommand() != null ? getDefaultCommand().getName() : "none",
+        null);
+    b.addBooleanProperty(".hasCommand", () -> getCurrentCommand() != null, null);
+    b.addStringProperty(
+        ".command",
+        () -> getCurrentCommand() != null ? getCurrentCommand().getName() : "none",
+        null);
   }
 
   @Override
